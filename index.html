@@ -11,7 +11,11 @@
 		<h1>Logan Hiking Trails</h1>
 	</header>
 	<div id="container">
-		<div id="sidebar"></div>
+		<div id="sidebar">
+			<ul data-bind="foreach: markerList">
+				<li data-bind="text: title"></li>
+			</ul>
+		</div>
 		<div id="map"></div>
 	</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
