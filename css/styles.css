@@ -33,3 +33,22 @@ position: absolute;
 	width: 20%;
 	background: #E8453C;
 }
+.infoWindow{
+	display: flex;
+  flex-wrap: wrap;
+}
+.infoWindow h3{
+	text-align: center;
+  flex-basis: 100%;
+}
+.infoWindow .row{
+    display: flex;
+    flex-basis: 100%;
+    justify-content: space-between;
+}
+.infoWindow .full{
+  flex-basis: 100%;
+}
+.infoWindow .summary{
+  font-size: 15px;
+}

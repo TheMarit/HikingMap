@@ -13,7 +13,7 @@
 	<div id="container">
 		<div id="sidebar">
 			<ul data-bind="foreach: markerList">
-				<li data-bind="text: title"></li>
+				<li data-bind="text: title, click: $parent.clickedLi"></li>
 			</ul>
 		</div>
 		<div id="map"></div>
