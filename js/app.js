@@ -53,9 +53,17 @@ function AppViewModel() {
 								</div>`
 			};
 			self.markerList.push(marker);
-			new google.maps.Marker(marker);
+			var googleMarker = new google.maps.Marker(marker);
+			self.attachEventListener(googleMarker);
 		}
     };
+
+    this.attachEventListener = function(googleMarker){
+		googleMarker.addListener('click', function(){
+			return self.clickedLi(googleMarker);
+		});
+    };
+
     this.clickedLi = function(clickedLi){
 		infowindow.setPosition(clickedLi.position);
 		infowindow.setContent(clickedLi.infoWindow);
