@@ -58,7 +58,7 @@ function AppViewModel() {
 									<p class="full"><a href="${trail.url}" target="_blank">More Info...</a></p>
 								</div>`
 			};
-			self.markerList.push(ko.observable(marker));
+			self.markerList.push(marker);
 			var googleMarker = new google.maps.Marker(marker);
 			self.markerListGoogle.push(googleMarker);
 			self.attachEventListener(googleMarker);
@@ -89,16 +89,13 @@ function AppViewModel() {
 	this.sortNumber = function(prop){
 		console.log(prop);
 		self.sortText(prop);
-		self.markerList().sort(
-			function(a,b){
-				console.log(a());
-				console.log(a()[prop] + ", " + b()[prop]);
-				return a()[prop] - b()[prop];
-			});
+        self.markerList.sort(function(a,b){return a[prop] - b[prop];});
+        self.markerListGoogle().sort(function(a,b){ console.log(a); return a[prop] - b[prop];});
 	};
 	this.sortNumberReverse = function(prop){
 		self.sortText(prop);
-		self.markerList.sort(function(a,b){return a()[prop] - b()[prop];}).reverse();
+		self.markerList.sort(function(a,b){return a[prop] - b[prop];}).reverse();
+        self.markerListGoogle().sort(function(a,b){ console.log(a); return a[prop] - b[prop];}).reverse();
 	};
 	this.sortName = function(prop){
 		self.sortText(prop);
@@ -113,10 +110,10 @@ function AppViewModel() {
 		for (var i=0; i < self.markerListGoogle().length; i++){
 			if(self.markerListGoogle()[i]["Length"] > num){
 				self.markerListGoogle()[i].setMap(null);
-				self.markerList()[i]().showInList(false);
+				self.markerList()[i].showInList(false);
 			} else{
 				self.markerListGoogle()[i].setMap(map);
-				self.markerList()[i]().showInList(true);
+				self.markerList()[i].showInList(true);
 			}
 		}
 	};
