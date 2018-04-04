@@ -33,13 +33,13 @@ position: absolute;
 	height: 100%;
 	width: 20%;
 	background: #E8453C;
-	border-right: 4px solid #cc3830;
-	z-index: 1;
 	color: white;
 }
 #sidebar ul{
 	margin: 0;
-	padding: 20px;
+	padding-left: 20px;
+	height: 92%;
+	overflow-y: scroll;
 }
 #sidebar li{
 	padding: 10px;
@@ -69,17 +69,18 @@ position: absolute;
 .dropbtn {
     background-color: #b53229;
     color: white;
-    padding: 16px;
     font-size: 16px;
     border: none;
     cursor: pointer;
     width: 100%;
+    height: 100%;
 }
 
 .dropdown {
     position: relative;
     display: inline-block;
     width: 100%;
+    height: 8%;
 }
 
 .dropdown-content {
@@ -107,4 +108,19 @@ position: absolute;
 
 .dropdown:hover .dropbtn {
     background-color: #8c2821;
+}
+
+ul::-webkit-scrollbar {
+    width: 12px;
+}
+/* Track */
+ul::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+
+}
+ 
+/* Handle */
+ul::-webkit-scrollbar-thumb {
+    background: #cc3830; 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }

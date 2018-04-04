@@ -9,6 +9,7 @@
 <body>
 	<header>
 		<h1>Logan Hiking Trails</h1>
+		Distance: <input type="number" data-bind="textInput: distance">
 	</header>
 	<div id="container">
 		<div id="sidebar">
@@ -21,8 +22,9 @@
   				</div>
 			</div>
 			<ul data-bind="foreach: markerList">
-				<li data-bind="text: Name, click: $parent.clickedLi"></li>
+				<li data-bind="visible: showInList, text: Name, click: $parent.clickedLi"></li>
 			</ul>
+			<button data-bind="click: filterNumber">filter length under 8 miles</button>
 		</div>
 		<div id="map"></div>
 	</div>

@@ -3,7 +3,7 @@ var map,
 
 function AppViewModel() {
     var self = this;
-    var apiUrl = "https://www.hikingproject.com/data/get-trails?maxDistance=20&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=41.763314&lon=-111.699597";
+    var apiUrl = "https://www.hikingproject.com/data/get-trails?maxDistance=20&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=41.763314&lon=-111.699597&maxResults=30";
 
 	var infowindow = new google.maps.InfoWindow({
 			content: null,
@@ -11,6 +11,10 @@ function AppViewModel() {
 		});
 	this.sortText = ko.observable('Quality');
     this.markerList = ko.observableArray([]);
+    this.markerListGoogle = ko.observableArray([]);
+    this.distance = ko.observable("");
+
+    this.distance.subscribe(function(newValue){return self.filterNumber(newValue);});
 
     this.getTrailData = function() {
 		var XHR = new XMLHttpRequest();
@@ -38,6 +42,7 @@ function AppViewModel() {
 				location: trail.location,
 				url: trail.url,
 				Length: trail.length,
+				showInList: ko.observable(true),
 				animation: google.maps.Animation.DROP,
 				icon: "hiker.png",
 				infoWindow: 	`<div class="infoWindow">
@@ -53,10 +58,13 @@ function AppViewModel() {
 									<p class="full"><a href="${trail.url}" target="_blank">More Info...</a></p>
 								</div>`
 			};
-			self.markerList.push(marker);
+			self.markerList.push(ko.observable(marker));
 			var googleMarker = new google.maps.Marker(marker);
+			self.markerListGoogle.push(googleMarker);
 			self.attachEventListener(googleMarker);
+
 		}
+		console.log(self.markerList()[0]());
     };
 
     this.attachEventListener = function(googleMarker){
@@ -79,14 +87,18 @@ function AppViewModel() {
 	};
 
 	this.sortNumber = function(prop){
-		console.log("number")
+		console.log(prop);
 		self.sortText(prop);
-		self.markerList.sort(function(a,b){return a[prop] - b[prop];});
+		self.markerList().sort(
+			function(a,b){
+				console.log(a());
+				console.log(a()[prop] + ", " + b()[prop]);
+				return a()[prop] - b()[prop];
+			});
 	};
 	this.sortNumberReverse = function(prop){
 		self.sortText(prop);
-		self.markerList.sort(function(a,b){return a[prop] - b[prop];}).reverse();
-
+		self.markerList.sort(function(a,b){return a()[prop] - b()[prop];}).reverse();
 	};
 	this.sortName = function(prop){
 		self.sortText(prop);
@@ -96,6 +108,17 @@ function AppViewModel() {
 			if (x < y) {return -1;}
 			if (x > y) {return 1;}
 			return 0;});
+	};
+	this.filterNumber = function(num){
+		for (var i=0; i < self.markerListGoogle().length; i++){
+			if(self.markerListGoogle()[i]["Length"] > num){
+				self.markerListGoogle()[i].setMap(null);
+				self.markerList()[i]().showInList(false);
+			} else{
+				self.markerListGoogle()[i].setMap(map);
+				self.markerList()[i]().showInList(true);
+			}
+		}
 	};
 
 
