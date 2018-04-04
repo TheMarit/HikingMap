@@ -15,6 +15,9 @@
 			<ul data-bind="foreach: markerList">
 				<li data-bind="text: title, click: $parent.clickedLi"></li>
 			</ul>
+			<button data-bind="click: sortNumber.bind($data, 'length')">Sort Length</button>
+			<button data-bind="click: sortNumber.bind($data, 'stars')">Sort Stars</button>
+			<button data-bind="click: sortName.bind($data, 'title')">Sort Name</button>
 		</div>
 		<div id="map"></div>
 	</div>

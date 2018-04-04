@@ -39,6 +39,7 @@ function AppViewModel() {
 				url: trail.url,
 				length: trail.length,
 				animation: google.maps.Animation.DROP,
+				icon: "hiker.png",
 				infoWindow: 	`<div class="infoWindow">
 									<h3>${trail.name}</h3>
 									<div class="row">
@@ -76,6 +77,20 @@ function AppViewModel() {
 			zoom: 11
 		});
 	};
+
+	this.sortNumber = function(prop){
+		self.markerList.sort(function(a,b){return a[prop] - b[prop];});
+	};
+	this.sortName = function(prop){
+		self.markerList.sort(function(a,b){
+			var x = a[prop].toLowerCase();
+			var y = b[prop].toLowerCase();
+			if (x < y) {return -1;}
+			if (x > y) {return 1;}
+			return 0;});
+	};
+
+
 	this.initMap();
 	this.getTrailData();
 	

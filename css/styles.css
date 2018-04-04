@@ -4,6 +4,7 @@ html, body {
 	padding: 0;
 	position: relative;
 	font-family: 'Raleway', sans-serif;
+	
 }
 header{
 	height: 8%;
@@ -32,6 +33,18 @@ position: absolute;
 	height: 100%;
 	width: 20%;
 	background: #E8453C;
+	border-right: 4px solid #cc3830;
+	z-index: 1;
+	color: white;
+}
+#sidebar ul{
+	margin: 0;
+	padding: 20px;
+}
+#sidebar li{
+	padding: 10px;
+    list-style-type: none;
+    cursor: pointer;
 }
 .infoWindow{
 	display: flex;
