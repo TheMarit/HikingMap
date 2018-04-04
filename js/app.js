@@ -9,7 +9,7 @@ function AppViewModel() {
 			content: null,
 			maxWidth: 500
 		});
-
+	this.sortText = ko.observable('Quality');
     this.markerList = ko.observableArray([]);
 
     this.getTrailData = function() {
@@ -31,13 +31,13 @@ function AppViewModel() {
 			var marker = {
 				position: {lat: trail.latitude, lng: trail.longitude},
 				map: map,
-				title: trail.name,
+				Name: trail.name,
 				summary: trail.summary,
 				difficulty: trail.difficulty,
-				stars: trail.stars,
+				Quality: trail.stars,
 				location: trail.location,
 				url: trail.url,
-				length: trail.length,
+				Length: trail.length,
 				animation: google.maps.Animation.DROP,
 				icon: "hiker.png",
 				infoWindow: 	`<div class="infoWindow">
@@ -79,9 +79,17 @@ function AppViewModel() {
 	};
 
 	this.sortNumber = function(prop){
+		console.log("number")
+		self.sortText(prop);
 		self.markerList.sort(function(a,b){return a[prop] - b[prop];});
 	};
+	this.sortNumberReverse = function(prop){
+		self.sortText(prop);
+		self.markerList.sort(function(a,b){return a[prop] - b[prop];}).reverse();
+
+	};
 	this.sortName = function(prop){
+		self.sortText(prop);
 		self.markerList.sort(function(a,b){
 			var x = a[prop].toLowerCase();
 			var y = b[prop].toLowerCase();

@@ -12,12 +12,17 @@
 	</header>
 	<div id="container">
 		<div id="sidebar">
+			<div class="dropdown">
+  				<button class="dropbtn">Sort By: <span data-bind="text: sortText">Quality</span></button>
+  				<div class="dropdown-content">
+    				<a data-bind="click: sortNumber.bind($data, 'Length')" href="#">Length</a>
+    				<a data-bind="click: sortNumberReverse.bind($data, 'Quality')" href="#">Quality</a>
+    				<a data-bind="click: sortName.bind($data, 'Name')" href="#">Name</a>
+  				</div>
+			</div>
 			<ul data-bind="foreach: markerList">
-				<li data-bind="text: title, click: $parent.clickedLi"></li>
+				<li data-bind="text: Name, click: $parent.clickedLi"></li>
 			</ul>
-			<button data-bind="click: sortNumber.bind($data, 'length')">Sort Length</button>
-			<button data-bind="click: sortNumber.bind($data, 'stars')">Sort Stars</button>
-			<button data-bind="click: sortName.bind($data, 'title')">Sort Name</button>
 		</div>
 		<div id="map"></div>
 	</div>
