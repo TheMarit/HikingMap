@@ -107,13 +107,17 @@ function AppViewModel() {
 			return 0;});
 	};
 	this.filterNumber = function(num){
+		if (num == ""){
+			console.log("nothing")
+		}
 		for (var i=0; i < self.markerListGoogle().length; i++){
-			if(self.markerListGoogle()[i]["Length"] > num){
-				self.markerListGoogle()[i].setMap(null);
-				self.markerList()[i].showInList(false);
-			} else{
+			if(self.markerListGoogle()[i]["Length"] < num || num == ""){
 				self.markerListGoogle()[i].setMap(map);
 				self.markerList()[i].showInList(true);
+			} else{
+				self.markerListGoogle()[i].setMap(null);
+				self.markerList()[i].showInList(false);
+				
 			}
 		}
 	};
