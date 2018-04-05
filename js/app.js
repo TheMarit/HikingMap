@@ -64,7 +64,6 @@ function AppViewModel() {
 			self.attachEventListener(googleMarker);
 
 		}
-		console.log(self.markerList()[0]());
     };
 
     this.attachEventListener = function(googleMarker){
@@ -106,12 +105,12 @@ function AppViewModel() {
 			if (x > y) {return 1;}
 			return 0;});
 	};
-	this.filterNumber = function(num){
-		if (num == ""){
+	this.filterNumber = function(from, to){
+		if (to == 30){
 			console.log("nothing")
 		}
 		for (var i=0; i < self.markerListGoogle().length; i++){
-			if(self.markerListGoogle()[i]["Length"] < num || num == ""){
+			if(self.markerListGoogle()[i]["Length"] <= to && self.markerListGoogle()[i]["Length"] >= from){
 				self.markerListGoogle()[i].setMap(map);
 				self.markerList()[i].showInList(true);
 			} else{
@@ -125,6 +124,20 @@ function AppViewModel() {
 
 	this.initMap();
 	this.getTrailData();
+
+	$("#distance_slider").ionRangeSlider({
+		type: "double",
+		min: 0,
+		max: 30,
+		from: 0,
+		to: 30,
+		postfix: " mi",
+		max_postfix: "+",
+		hide_min_max: true,
+		onFinish: function (data){
+			self.filterNumber(data.from, data.to);
+		}
+});
 	
 }
 

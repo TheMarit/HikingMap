@@ -46,6 +46,8 @@ position: absolute;
     list-style-type: none;
     cursor: pointer;
 }
+
+/* maps infoWindow */
 .infoWindow{
 	display: flex;
   flex-wrap: wrap;
@@ -65,7 +67,7 @@ position: absolute;
 .infoWindow .summary{
   font-size: 15px;
 }
-
+/* dropdown sort button */
 .dropbtn {
     background-color: #b53229;
     color: white;
@@ -110,17 +112,22 @@ position: absolute;
     background-color: #8c2821;
 }
 
+/* scrollbar */
 ul::-webkit-scrollbar {
     width: 12px;
 }
-/* Track */
+
 ul::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 
 }
  
-/* Handle */
 ul::-webkit-scrollbar-thumb {
     background: #cc3830; 
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+.slider{
+    width: 150px;
+    padding-left: 30px;
 }
