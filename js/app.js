@@ -105,12 +105,12 @@ function AppViewModel() {
 			if (x > y) {return 1;}
 			return 0;});
 	};
-	this.filterNumber = function(from, to){
+	this.filterNumber = function(from, to, prop){
 		if (to == 30){
 			console.log("nothing")
 		}
 		for (var i=0; i < self.markerListGoogle().length; i++){
-			if(self.markerListGoogle()[i]["Length"] <= to && self.markerListGoogle()[i]["Length"] >= from){
+			if(self.markerListGoogle()[i][prop] <= to && self.markerListGoogle()[i][prop] >= from){
 				self.markerListGoogle()[i].setMap(map);
 				self.markerList()[i].showInList(true);
 			} else{
@@ -135,9 +135,22 @@ function AppViewModel() {
 		max_postfix: "+",
 		hide_min_max: true,
 		onFinish: function (data){
-			self.filterNumber(data.from, data.to);
+			self.filterNumber(data.from, data.to, "Length");
 		}
-});
+	});
+
+	$("#star_slider").ionRangeSlider({
+		type: "double",
+		min: 1,
+		max: 5,
+		from: 1,
+		to: 5,
+		postfix: " &#9733;",
+		hide_min_max: true,
+		onFinish: function (data){
+			self.filterNumber(data.from, data.to, "Quality");
+		}
+	});
 	
 }
 
