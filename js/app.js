@@ -11,7 +11,6 @@ function AppViewModel() {
 		});
 	this.sortText = ko.observable('Quality');
     this.markerList = ko.observableArray([]);
-    this.markerListGoogle = ko.observableArray([]);
     this.searchField = ko.observable("");
     this.difficultyArr = ["green", "greenBlue", "blue", "blueBlack", "black"];
     this.searchField.subscribe(function(newValue){return self.search(newValue);});
@@ -57,9 +56,8 @@ function AppViewModel() {
 									<p class="full"><a href="${trail.url}" target="_blank">More Info...</a></p>
 								</div>`
 			};
-			self.markerList.push(marker);
 			var googleMarker = new google.maps.Marker(marker);
-			self.markerListGoogle.push(googleMarker);
+			self.markerList.push(ko.observable(googleMarker));
 			self.attachEventListener(googleMarker);
 
 		}
@@ -82,25 +80,19 @@ function AppViewModel() {
 	};
 	this.sortNumber = function(prop){
 		self.sortText(prop);
-        self.markerList.sort(function(a,b){return a[prop] - b[prop];});
-        self.markerListGoogle().sort(function(a,b){return a[prop] - b[prop];});
+		console.log(self.markerList());
+        self.markerList.sort(function(a,b){return a()[prop] - b()[prop];});
 	};
 	this.sortNumberReverse = function(prop){
 		self.sortText(prop);
-		self.markerList.sort(function(a,b){return a[prop] - b[prop];}).reverse();
-        self.markerListGoogle().sort(function(a,b){return a[prop] - b[prop];}).reverse();
+        self.markerList.sort(function(a,b){return a()[prop] - b()[prop];}).reverse();
 	};
 	this.sortName = function(prop){
 		self.sortText(prop);
+		console.log(self.markerList());
 		self.markerList.sort(function(a,b){
-			var x = a[prop].toLowerCase();
-			var y = b[prop].toLowerCase();
-			if (x < y) {return -1;}
-			if (x > y) {return 1;}
-			return 0;});
-		self.markerListGoogle().sort(function(a,b){
-			var x = a[prop].toLowerCase();
-			var y = b[prop].toLowerCase();
+			var x = a()[prop].toLowerCase();
+			var y = b()[prop].toLowerCase();
 			if (x < y) {return -1;}
 			if (x > y) {return 1;}
 			return 0;});
@@ -108,15 +100,8 @@ function AppViewModel() {
 	this.sortDiff = function(){
 		self.sortText("Difficulty");
 		self.markerList.sort(function(a,b){
-			var indexA = self.difficultyArr.indexOf(a.Difficulty);
-			var indexB = self.difficultyArr.indexOf(b.Difficulty);
-			if (indexA < indexB) {return -1;}
-			if (indexA > indexB) {return 1;}
-			return 0;
-		});
-		self.markerListGoogle().sort(function(a,b){
-			var indexA = self.difficultyArr.indexOf(a.Difficulty);
-			var indexB = self.difficultyArr.indexOf(b.Difficulty);
+			var indexA = self.difficultyArr.indexOf(a().Difficulty);
+			var indexB = self.difficultyArr.indexOf(b().Difficulty);
 			if (indexA < indexB) {return -1;}
 			if (indexA > indexB) {return 1;}
 			return 0;
@@ -124,41 +109,41 @@ function AppViewModel() {
 		
 	};
 	this.filterNumber = function(from, to, prop){
-		for (var i=0; i < self.markerListGoogle().length; i++){
-			if(self.markerListGoogle()[i][prop] <= to && self.markerListGoogle()[i][prop] >= from){
-				self.markerListGoogle()[i].setMap(map);
-				self.markerList()[i].showInList(true);
+
+		for (var i=0; i < self.markerList().length; i++){
+			if(self.markerList()[i]()[prop] <= to && self.markerList()[i]()[prop] >= from){
+				self.markerList()[i]().setMap(map);
+				self.markerList()[i]().showInList(true);
 			} else{
-				self.markerListGoogle()[i].setMap(null);
-				self.markerList()[i].showInList(false);
+				self.markerList()[i]().setMap(null);
+				self.markerList()[i]().showInList(false);
 				
 			}
 		}
 	};
 	this.filterDiff = function(from, to){
-		for (var i=0; i < self.markerListGoogle().length; i++){
-			var diff = self.markerListGoogle()[i].Difficulty;
+		for (var i=0; i < self.markerList().length; i++){
+			var diff = self.markerList()[i]().Difficulty;
 			var index = self.difficultyArr.indexOf(diff);
 			if( index <= to && index >= from){
-				self.markerListGoogle()[i].setMap(map);
-				self.markerList()[i].showInList(true);
+				self.markerList()[i]().setMap(map);
+				self.markerList()[i]().showInList(true);
 			} else{
-				self.markerListGoogle()[i].setMap(null);
-				self.markerList()[i].showInList(false);
-				
+				self.markerList()[i]().setMap(null);
+				self.markerList()[i]().showInList(false);
 			}
 		}
 	};
 	this.search = function(searchString){
-		for (var i=0; i < self.markerListGoogle().length; i++){
+		for (var i=0; i < self.markerList().length; i++){
 			var search = searchString.toLowerCase();
-			var name = self.markerListGoogle()[i].Name.toLowerCase();
+			var name = self.markerList()[i]().Name.toLowerCase();
 			if( name.indexOf(search) != -1){
-				self.markerListGoogle()[i].setMap(map);
-				self.markerList()[i].showInList(true);
+				self.markerList()[i]().setMap(map);
+				self.markerList()[i]().showInList(true);
 			} else{
-				self.markerListGoogle()[i].setMap(null);
-				self.markerList()[i].showInList(false);	
+				self.markerList()[i]().setMap(null);
+				self.markerList()[i]().showInList(false);	
 			}
 		}
 	};
