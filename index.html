@@ -10,17 +10,21 @@
 </head>
 <body>
 	<header>
-		<h1>Logan Hiking Trails</h1>
-		<div class="slider">
-			<input type="text" id="distance_slider" name="distance" value="" />
+		<div class="flex">
+			<h1>Logan Hiking Trails</h1>
+			<div class="slider">
+				<input type="text" id="distance_slider" name="distance" value="" />
+			</div>
+			<div class="slider">
+				<input type="text" id="star_slider" name="star" value="" />
+			</div>
+			<div class="slider">
+				<input type="text" id="diff_slider" name="difficulty" value="" />
+			</div>
 		</div>
-		<div class="slider">
-			<input type="text" id="star_slider" name="star" value="" />
+		<div>
+			<input type="text" id="searchbar" placeholder="Search..." data-bind="textInput: searchField">
 		</div>
-		<div class="slider">
-			<input type="text" id="diff_slider" name="difficulty" value="" />
-		</div>
-		
 
 	</header>
 	<div id="container">

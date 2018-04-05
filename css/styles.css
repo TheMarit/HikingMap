@@ -9,6 +9,7 @@ html, body {
 header{
 	height: 8%;
 	display: flex;
+    justify-content: space-between;
 	align-items: center;
 	background-color: #cc3830 ;
 }
@@ -130,4 +131,16 @@ ul::-webkit-scrollbar-thumb {
 .slider{
     width: 150px;
     padding-left: 40px;
+}
+
+#searchbar{
+    font-family: Raleway;
+    padding: 6px;
+    border: none;
+    margin-right: 16px;
+    font-size: 17px;
+    border-radius: 5px;
+}
+.flex{
+    display: flex;
 }

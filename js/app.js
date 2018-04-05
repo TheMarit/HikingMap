@@ -12,10 +12,9 @@ function AppViewModel() {
 	this.sortText = ko.observable('Quality');
     this.markerList = ko.observableArray([]);
     this.markerListGoogle = ko.observableArray([]);
-    this.distance = ko.observable("");
+    this.searchField = ko.observable("");
     this.difficultyArr = ["green", "greenBlue", "blue", "blueBlack", "black"];
-
-    this.distance.subscribe(function(newValue){return self.filterNumber(newValue);});
+    this.searchField.subscribe(function(newValue){return self.search(newValue);});
 
     this.getTrailData = function() {
 		var XHR = new XMLHttpRequest();
@@ -30,7 +29,6 @@ function AppViewModel() {
 		XHR.open("GET", apiUrl);
 		XHR.send();
     };
-
     this.createMarkers = function(){
 		for (let trail of trails){
 			var marker = {
@@ -66,28 +64,23 @@ function AppViewModel() {
 
 		}
     };
-
     this.attachEventListener = function(googleMarker){
 		googleMarker.addListener('click', function(){
 			return self.clickedLi(googleMarker);
 		});
     };
-
     this.clickedLi = function(clickedLi){
 		infowindow.setPosition(clickedLi.position);
 		infowindow.setContent(clickedLi.infoWindow);
 		infowindow.open(map);
     };
-
     this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: 41.763314, lng: -111.699597},
 			zoom: 11
 		});
 	};
-
 	this.sortNumber = function(prop){
-		console.log(prop);
 		self.sortText(prop);
         self.markerList.sort(function(a,b){return a[prop] - b[prop];});
         self.markerListGoogle().sort(function(a,b){return a[prop] - b[prop];});
@@ -122,7 +115,6 @@ function AppViewModel() {
 			return 0;
 		});
 		self.markerListGoogle().sort(function(a,b){
-			console.log(a);
 			var indexA = self.difficultyArr.indexOf(a.Difficulty);
 			var indexB = self.difficultyArr.indexOf(b.Difficulty);
 			if (indexA < indexB) {return -1;}
@@ -154,6 +146,19 @@ function AppViewModel() {
 				self.markerListGoogle()[i].setMap(null);
 				self.markerList()[i].showInList(false);
 				
+			}
+		}
+	};
+	this.search = function(searchString){
+		for (var i=0; i < self.markerListGoogle().length; i++){
+			var search = searchString.toLowerCase();
+			var name = self.markerListGoogle()[i].Name.toLowerCase();
+			if( name.indexOf(search) != -1){
+				self.markerListGoogle()[i].setMap(map);
+				self.markerList()[i].showInList(true);
+			} else{
+				self.markerListGoogle()[i].setMap(null);
+				self.markerList()[i].showInList(false);	
 			}
 		}
 	};
