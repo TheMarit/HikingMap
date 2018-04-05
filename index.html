@@ -17,6 +17,9 @@
 		<div class="slider">
 			<input type="text" id="star_slider" name="star" value="" />
 		</div>
+		<div class="slider">
+			<input type="text" id="diff_slider" name="difficulty" value="" />
+		</div>
 		
 
 	</header>
@@ -28,6 +31,7 @@
     				<a data-bind="click: sortNumber.bind($data, 'Length')" href="#">Length</a>
     				<a data-bind="click: sortNumberReverse.bind($data, 'Quality')" href="#">Quality</a>
     				<a data-bind="click: sortName.bind($data, 'Name')" href="#">Name</a>
+    				<a data-bind="click: sortDiff" href="#">Difficulty</a>
   				</div>
 			</div>
 			<ul data-bind="foreach: markerList">

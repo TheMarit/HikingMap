@@ -13,6 +13,7 @@ function AppViewModel() {
     this.markerList = ko.observableArray([]);
     this.markerListGoogle = ko.observableArray([]);
     this.distance = ko.observable("");
+    this.difficultyArr = ["green", "greenBlue", "blue", "blueBlack", "black"];
 
     this.distance.subscribe(function(newValue){return self.filterNumber(newValue);});
 
@@ -37,7 +38,7 @@ function AppViewModel() {
 				map: map,
 				Name: trail.name,
 				summary: trail.summary,
-				difficulty: trail.difficulty,
+				Difficulty: trail.difficulty,
 				Quality: trail.stars,
 				location: trail.location,
 				url: trail.url,
@@ -89,12 +90,12 @@ function AppViewModel() {
 		console.log(prop);
 		self.sortText(prop);
         self.markerList.sort(function(a,b){return a[prop] - b[prop];});
-        self.markerListGoogle().sort(function(a,b){ console.log(a); return a[prop] - b[prop];});
+        self.markerListGoogle().sort(function(a,b){return a[prop] - b[prop];});
 	};
 	this.sortNumberReverse = function(prop){
 		self.sortText(prop);
 		self.markerList.sort(function(a,b){return a[prop] - b[prop];}).reverse();
-        self.markerListGoogle().sort(function(a,b){ console.log(a); return a[prop] - b[prop];}).reverse();
+        self.markerListGoogle().sort(function(a,b){return a[prop] - b[prop];}).reverse();
 	};
 	this.sortName = function(prop){
 		self.sortText(prop);
@@ -104,11 +105,33 @@ function AppViewModel() {
 			if (x < y) {return -1;}
 			if (x > y) {return 1;}
 			return 0;});
+		self.markerListGoogle().sort(function(a,b){
+			var x = a[prop].toLowerCase();
+			var y = b[prop].toLowerCase();
+			if (x < y) {return -1;}
+			if (x > y) {return 1;}
+			return 0;});
+	};
+	this.sortDiff = function(){
+		self.sortText("Difficulty");
+		self.markerList.sort(function(a,b){
+			var indexA = self.difficultyArr.indexOf(a.Difficulty);
+			var indexB = self.difficultyArr.indexOf(b.Difficulty);
+			if (indexA < indexB) {return -1;}
+			if (indexA > indexB) {return 1;}
+			return 0;
+		});
+		self.markerListGoogle().sort(function(a,b){
+			console.log(a);
+			var indexA = self.difficultyArr.indexOf(a.Difficulty);
+			var indexB = self.difficultyArr.indexOf(b.Difficulty);
+			if (indexA < indexB) {return -1;}
+			if (indexA > indexB) {return 1;}
+			return 0;
+		});
+		
 	};
 	this.filterNumber = function(from, to, prop){
-		if (to == 30){
-			console.log("nothing")
-		}
 		for (var i=0; i < self.markerListGoogle().length; i++){
 			if(self.markerListGoogle()[i][prop] <= to && self.markerListGoogle()[i][prop] >= from){
 				self.markerListGoogle()[i].setMap(map);
@@ -120,7 +143,20 @@ function AppViewModel() {
 			}
 		}
 	};
-
+	this.filterDiff = function(from, to){
+		for (var i=0; i < self.markerListGoogle().length; i++){
+			var diff = self.markerListGoogle()[i].Difficulty;
+			var index = self.difficultyArr.indexOf(diff);
+			if( index <= to && index >= from){
+				self.markerListGoogle()[i].setMap(map);
+				self.markerList()[i].showInList(true);
+			} else{
+				self.markerListGoogle()[i].setMap(null);
+				self.markerList()[i].showInList(false);
+				
+			}
+		}
+	};
 
 	this.initMap();
 	this.getTrailData();
@@ -149,6 +185,17 @@ function AppViewModel() {
 		hide_min_max: true,
 		onFinish: function (data){
 			self.filterNumber(data.from, data.to, "Quality");
+		}
+	});
+
+	$("#diff_slider").ionRangeSlider({
+		type: "double",
+		from: 0,
+		to: 5,
+		hide_min_max: true,
+		values: self.difficultyArr,
+		onFinish: function (data){
+			self.filterDiff(data.from, data.to);
 		}
 	});
 	
