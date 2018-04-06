@@ -3,21 +3,29 @@ var map,
 
 function AppViewModel() {
     var self = this;
-    var apiUrl = "https://www.hikingproject.com/data/get-trails?maxDistance=20&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=41.763314&lon=-111.699597&maxResults=30";
-
+    // var apiUrl = "https://www.hikingproject.com/data/get-trails?maxDistance=20&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=41.763314&lon=-111.699597&maxResults=100";
+    
 	var infowindow = new google.maps.InfoWindow({
 			content: null,
 			maxWidth: 500
 		});
 	this.sortText = ko.observable('Quality');
+	this.distance = ko.observable("17");
+	this.lat = ko.observable("41.763314");
+	this.lng = ko.observable("-111.699597");
     this.markerList = ko.observableArray();
     this.searchField = ko.observable("");
     this.difficultyArr = ["green", "greenBlue", "blue", "blueBlack", "black"];
     this.searchField.subscribe(function(newValue){return self.runAllFilters(newValue);});
-
+    this.apiUrl = ko.computed(function(){
+		return "https://www.hikingproject.com/data/get-trails?maxDistance=" + self.distance() + "&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=" + self.lat() + "&lon=" + self.lng() + "&maxResults=50";
+    });
+    this.apiUrl.subscribe(function(){self.getTrailData();});
     this.getTrailData = function() {
-		var XHR = new XMLHttpRequest();
 
+		self.clearMarkers();
+		console.log(self.markerList());
+		var XHR = new XMLHttpRequest();
 		XHR.onreadystatechange = function(){
 			if(XHR.readyState == 4 && XHR.status == 200){
 				trails = JSON.parse(XHR.responseText)["trails"];
@@ -25,10 +33,17 @@ function AppViewModel() {
 			}
 		};
   
-		XHR.open("GET", apiUrl);
+		XHR.open("GET", self.apiUrl());
 		XHR.send();
     };
+    this.clearMarkers = function(){
+    	for (var i = 0; i < self.markerList().length; i++ ) {
+    		self.markerList()[i]().setMap(null);
+  		}
+  		self.markerList.removeAll();
+    };
     this.createMarkers = function(){
+		console.log(trails);
 		for (let trail of trails){
 			var marker = {
 				position: {lat: trail.latitude, lng: trail.longitude},
@@ -41,7 +56,6 @@ function AppViewModel() {
 				url: trail.url,
 				Length: trail.length,
 				showInList: ko.observable(true),
-				animation: google.maps.Animation.DROP,
 				icon: "hiker.png",
 				infoWindow: 	`<div class="infoWindow">
 									<h3>${trail.name}</h3>
@@ -59,7 +73,6 @@ function AppViewModel() {
 			var googleMarker = new google.maps.Marker(marker);
 			self.markerList.push(ko.observable(googleMarker));
 			self.attachEventListener(googleMarker);
-
 		}
     };
     this.attachEventListener = function(googleMarker){
@@ -76,6 +89,26 @@ function AppViewModel() {
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: 41.763314, lng: -111.699597},
 			zoom: 11
+		});
+		map.addListener('dragend', function(){
+			var center = map.getCenter();
+			self.lat(center.lat());
+			self.lng(center.lng());
+		});
+		map.addListener('zoom_changed', function(){
+			var bounds = map.getBounds();
+			var swLat = bounds.getSouthWest().lat(); 
+			var neLat = bounds.getNorthEast().lat();
+			var swLng = bounds.getSouthWest().lng();
+			var firstPoint = new google.maps.LatLng(swLat, swLng);
+			var secPoint = new google.maps.LatLng(neLat, swLng);
+			var proximitymeter = google.maps.geometry.spherical.computeDistanceBetween (firstPoint, secPoint);
+			var proximity = Math.round(proximitymeter * 0.000621371192 / 2) -5;
+			self.distance(proximity);
+
+			var center = map.getCenter();
+			self.lat(center.lat());
+			self.lng(center.lng());
 		});
 	};
 	this.sortNumber = function(prop){
