@@ -3,8 +3,6 @@ var map,
 
 function AppViewModel() {
     var self = this;
-    // var apiUrl = "https://www.hikingproject.com/data/get-trails?maxDistance=20&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=41.763314&lon=-111.699597&maxResults=100";
-    
 	var infowindow = new google.maps.InfoWindow({
 			content: null,
 			maxWidth: 500
@@ -20,30 +18,40 @@ function AppViewModel() {
     this.apiUrl = ko.computed(function(){
 		return "https://www.hikingproject.com/data/get-trails?maxDistance=" + self.distance() + "&key=200240731-0449812db40864bc0f8afbc4ea29eccb&lat=" + self.lat() + "&lon=" + self.lng() + "&maxResults=50";
     });
-    this.apiUrl.subscribe(function(){self.getTrailData();});
-    this.getTrailData = function() {
+    this.apiUrl.subscribe(function(){
+		self.getHikes();
+    });
+    
+    this.getHikes = function(){
+		return self.getTrailData()
+		.then(function(response){
+			return response.json();
+		}).then(function(response){
+			trails = response["trails"];
+		}).then( function(){
+			return self.clearMarkers();
+		}).then(function(){
+			self.createMarkers();
+		}).then(function(){
+			self.runAllFilters();
+		});
+    };
 
-		self.clearMarkers();
-		console.log(self.markerList());
-		var XHR = new XMLHttpRequest();
-		XHR.onreadystatechange = function(){
-			if(XHR.readyState == 4 && XHR.status == 200){
-				trails = JSON.parse(XHR.responseText)["trails"];
-				self.createMarkers();
-			}
-		};
-  
-		XHR.open("GET", self.apiUrl());
-		XHR.send();
+    this.getTrailData = function() {
+		return fetch(self.apiUrl());
     };
+
     this.clearMarkers = function(){
-    	for (var i = 0; i < self.markerList().length; i++ ) {
-    		self.markerList()[i]().setMap(null);
-  		}
-  		self.markerList.removeAll();
+		return new Promise (function(resolve){
+			for (var i = 0; i < self.markerList().length; i++ ) {
+				self.markerList()[i]().setMap(null);
+			}
+			self.markerList.removeAll();
+			resolve();
+		});
     };
+
     this.createMarkers = function(){
-		console.log(trails);
 		for (let trail of trails){
 			var marker = {
 				position: {lat: trail.latitude, lng: trail.longitude},
@@ -179,7 +187,7 @@ function AppViewModel() {
 		self.search(searchString);
 	};
 	this.initMap();
-	this.getTrailData();
+	this.getHikes();
 
 	$("#distance_slider").ionRangeSlider({
 		type: "double",
